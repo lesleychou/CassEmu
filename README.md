@@ -61,6 +61,7 @@ Clean Ubuntu 18.04
 
 ### Setup KeySpace
 In Cassandra interface, we set
+
     create keyspace ycsb with replication = {'class':'SimpleStrategy', 'replication_factor':3};
     use ycsb;
     create table usertable (y_id varchar primary key,field0 varchar);
