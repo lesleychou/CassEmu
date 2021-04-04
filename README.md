@@ -33,7 +33,7 @@
     cp conf/cassandra1.yaml conf/cassandra.yaml
     cd bin
     sudo chmod 777 cassandra
-    cd /tmp/CassRepo/cassandra-3.9/bin
+    cd /tmp/CassSelect/cassandra-3.9/bin
     ./cassandra -f
 
     #client 2
