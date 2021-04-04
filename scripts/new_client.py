@@ -30,15 +30,15 @@ def sys_main():
 
     for req_id in range(0, 20):
 
-        # Prepare data to insert, You can replace the insert by any other operation you want.
+        # Prepare data to insert, You can replace the insert by any other operation (e.g., READ, UPDATE) you want.
         # In this example, we insert (y_id, field0) to the table
         random.seed(time.time())
         paras = [''.join(random.sample(string.ascii_letters + string.digits, 20)), '1']
 
         # send request
         sender.sendOneRequest(host=replica_selection(req_id=req_id), type=QueryType.INSERT, db_data=paras, req_id=req_id)
-        # print latency for each request
 
+    # print latency for each request. You can use this data to build latency profile for each replica server
     latency_array = sender.getLatencies()
     for i in latency_array:
         print('Latency for request' + str(i) + ':' + str(latency_array[i]))
