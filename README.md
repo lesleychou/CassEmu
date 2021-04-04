@@ -21,10 +21,6 @@ Clean Ubuntu 18.04
     sudo apt-get install python3-pip
     pip3 install cassandra-driver
     pip3 install Faker
-
-    pip3 install pandas
-    pip3 install numpy
-    pip3 install matplotlib
     pip3 install datetime
   
 ### Get Cassandra Database (on client and replicas)
