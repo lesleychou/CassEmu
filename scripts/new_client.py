@@ -39,6 +39,7 @@ def sys_main():
         sender.sendOneRequest(host=replica_selection(req_id=req_id), type=QueryType.INSERT, db_data=paras, req_id=req_id)
 
     # print latency for each request. You can use this data to build latency profile for each replica server
+    print('Here is latency:')
     latency_array = sender.getLatencies()
     for i in latency_array:
         print('Latency for request' + str(i) + ':' + str(latency_array[i]))
