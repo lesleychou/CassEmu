@@ -7,11 +7,8 @@
     printf "Y" | sudo apt-get install software-properties-common
     printf "\n" | sudo add-apt-repository ppa:webupd8team/java
     sudo apt-get update
-    sudo apt-get install oracle-java8-set-default
+    sudo apt install openjdk-8-jdk openjdk-8-jre
 
-    sudo apt-get update
-    printf "Y" | sudo apt-get install software-properties-common
-    sudo apt install oracle-java8-set-default
 ### Cassandra's Python Client
     sudo dpkg-reconfigure dash
     sudo apt-get install python3-tk
@@ -29,10 +26,10 @@
   
 ### Get Cassandra Database (on client and replicas)
     cd /tmp/
-    git clone https://github.com/hyperpro/CassRepo.git
+    git clone https://github.com/hyperpro/CassSelect.git
     
     #client 1
-    cd /tmp/CassRepo/cassandra-3.9/
+    cd /tmp/CassSelect/cassandra-3.9/
     cp conf/cassandra1.yaml conf/cassandra.yaml
     cd bin
     sudo chmod 777 cassandra
@@ -40,19 +37,19 @@
     ./cassandra -f
 
     #client 2
-    cd /tmp/CassRepo/cassandra-3.9/
+    cd /tmp/CassSelect/cassandra-3.9/
     cp conf/cassandra2.yaml conf/cassandra.yaml
     cd bin
     sudo chmod 777 cassandra
-    cd /tmp/CassRepo/cassandra-3.9/bin
+    cd /tmp/CassSelect/cassandra-3.9/bin
     ./cassandra -f
     
     #client 3
-    cd /tmp/CassRepo/cassandra-3.9/
+    cd /tmp/CassSelect/cassandra-3.9/
     cp conf/cassandra3.yaml conf/cassandra.yaml
     cd bin
     sudo chmod 777 cassandra
-    cd /tmp/CassRepo/cassandra-3.9/bin
+    cd /tmp/CassSelect/cassandra-3.9/bin
     ./cassandra -f
 
 ### Cassndra Interface
