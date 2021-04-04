@@ -53,7 +53,7 @@
     ./cassandra -f
 
 ### Cassndra Interface
-    cd /tmp/CassRepo/cassandra-3.9/bin
+    cd /tmp/CassSelect/cassandra-3.9/bin
     chmod 777 cqlsh
     ./cqlsh $thisIP 
 
