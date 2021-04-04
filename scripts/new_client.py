@@ -20,7 +20,7 @@ def replica_selection(latency_profile=None, req_id=None):
     '''
 
     selected_req_id = req_id % 3
-    return selected_req_id
+    return hosts[selected_req_id]
 
 
 def sys_main():
