@@ -51,13 +51,13 @@ def sys_main():
         curr_time = time.time()
         # Prepare data to insert, You can replace the insert by any other operation (e.g., READ, UPDATE) you want.
         # In this example, we insert (y_id, field0) to the table
-        random.seed( time.time() )
+        random.seed(100 )
         # max key size 65555, max value size: 2GB (2e9)
         paras = data_sample[req_id]
         print( 'Insert data:' )
         # print(paras)
         # send request
-        decision_interval = 0.00004
+        decision_interval = 0.00001
         print(sender.host_queues, "-------queue size")
         if (time.time() - curr_time) >= decision_interval:
             print("-----------new decision----------")
