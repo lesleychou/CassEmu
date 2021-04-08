@@ -69,6 +69,7 @@ def run_client(data_sample, num_exp=100):
         req_for_hosts[host_id].append( req_id )
 
         sender.sendOneRequest( host=host_id ,type=QueryType.INSERT ,db_data=paras ,req_id=str( req_id ) )
+        time.sleep(0.1)
         # print( sender.host_queues ,"----queues" )
         total_reward = 0
 
