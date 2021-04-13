@@ -8,7 +8,7 @@ import random
 import string
 
 # you should put the IPs of replicas in the hosts
-hosts = ['10.52.1.99' ,'10.52.3.66' ,'10.52.3.5']
+hosts = ['10.52.1.5', '10.52.3.82', '10.52.2.128']
 sender = ClientSender( hosts )
 replica_num = 3
 
@@ -37,17 +37,17 @@ def sys_main():
 
     chars = string.ascii_letters + string.digits
     data_sample = []
-    for i in range( 20000 ):
+    for i in range( 500 ):
         data_sample.append( [''.join( random.choice( chars ) for _ in range( 6000 ) ) ,
-                             ''.join( random.choice( chars ) for _ in range( int( 1000 ) ) )] )
+                             ''.join( random.choice( chars ) for _ in range( int( 10000 ) ) )] )
     req_for_hosts = {}
-    host_id = '10.52.1.99'
+    host_id = '10.52.1.5'
 
     for s in hosts:
         req_for_hosts[s] = []
 
     start_time = time.time()
-    for req_id in range( 0 ,20000 ):
+    for req_id in range( 0 ,500 ):
         curr_time = time.time()
         # Prepare data to insert, You can replace the insert by any other operation (e.g., READ, UPDATE) you want.
         # In this example, we insert (y_id, field0) to the table
@@ -57,21 +57,21 @@ def sys_main():
         print( 'Insert data:' )
         # print(paras)
         # send request
-        decision_interval = 0.00001
+        #decision_interval = 0.00001
         print(sender.host_queues, "-------queue size")
-        if (time.time() - curr_time) >= decision_interval:
-            print("-----------new decision----------")
-            host_id = replica_selection( queue_size_dict=sender.host_queues ,req_id=req_id )
+        #if (time.time() - curr_time) >= decision_interval:
+            #print("-----------new decision----------")
+        host_id = replica_selection( queue_size_dict=sender.host_queues ,req_id=req_id )
 
         print( host_id ,"---selected_id" )
         req_for_hosts[host_id].append( req_id )
 
         sender.sendOneRequest( host=host_id ,type=QueryType.INSERT ,db_data=paras ,req_id=str( req_id ) )
-        time.sleep(0.1)
+        time.sleep(0.0000000001)
         # print(sender.host_queues, "----queues")
     print( "--- %s seconds ---" % (time.time() - start_time) )
 
-    print( req_for_hosts )
+    #print( req_for_hosts )
     # print latency for each request. You can use this data to build latency profile for each replica server
     print( 'Here is latency:' )
     latency_array = sender.getLatencies()

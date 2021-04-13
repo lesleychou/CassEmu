@@ -15,23 +15,12 @@ import sys
 import math
 import random
 import string
-import threading
-import queue
 
 # you should put the IPs of replicas in the hosts
 hosts = ['10.52.1.5', '10.52.3.82', '10.52.2.128']
 sender = ClientSender( hosts )
 replica_num = 3
 
-all_hosts_queue_size = {}
-act = 0
-shouldRun = True
-start_time = time.time()
-my_queue = queue.Queue()
-def storeInQueue(f):
-  def wrapper(*args):
-    my_queue.put(f(*args))
-  return wrapper
 
 def find_shortest_queue_size(queue_size_dict):
     min_val = min( [len( queue_size_dict[ele] ) for ele in queue_size_dict] )
@@ -39,66 +28,55 @@ def find_shortest_queue_size(queue_size_dict):
         if len( queue_size_dict[ele] ) == min_val:
             return ele
 
-@storeInQueue
-def run_client(data_sample, num_exp=500):
+
+def run_test(data_sample ,agent ,num_exp=500):
     # # set up environment
     # env = envs.make(args.env)
-    global all_hosts_queue_size
-    global act
-    global shouldRun
-
     all_total_reward = []
     req_for_hosts = {}
+    act = 0
 
     for s in hosts:
         req_for_hosts[s] = []
-    #start_time = time.time()
+    start_time = time.time()
+    curr_time = time.time()
     # run experiment
     for req_id in range( 0 ,num_exp ):
+        curr_time = time.time()
         # Prepare data to insert, You can replace the insert by any other operation (e.g., READ, UPDATE) you want.
         # In this example, we insert (y_id, field0) to the table
-        random.seed(100)
+        random.seed( time.time() )
         # max key size 65555, max value size: 2GB (2e9)
         paras = data_sample[req_id]
         # print( 'Insert data:' )
         # send request
         all_hosts_queue_size = sender.host_queues
-        #print( all_hosts_queue_size )
+        print( all_hosts_queue_size )
+        each_queue_lengths = {k: len( v ) for k ,v in all_hosts_queue_size.items()}
+        state = list( each_queue_lengths.values() )
+        state.append(1)
+
+        #decision_interval = 0.00004
+        #if (time.time() - curr_time) >= decision_interval:
+           # print("-----------new decision----------")
+        act = agent.get_action( state )
+        print( state ,act ,"-----state, act" )
         host_id = hosts[act]
-        #print( host_id ,"---selected_id" )
+        print( host_id ,"---selected_id" )
         req_for_hosts[host_id].append( req_id )
-        print(time.time()-start_time, "-------------request send time")
+
         sender.sendOneRequest( host=host_id ,type=QueryType.INSERT ,db_data=paras ,req_id=str( req_id ) )
-        print(time.time()-start_time, "-------------request return time")
-        #time.sleep(0.1)
         # print( sender.host_queues ,"----queues" )
+
         total_reward = 0
 
         # state = env.observe()
         # TODO: state = queue_size, 1
 
         all_total_reward.append( total_reward )
-    shouldRun = False
     print( "--- %s seconds ---" % (time.time() - start_time) )
 
     return all_total_reward ,req_for_hosts
-
-
-def run_rl_agent(agent):
-    global all_hosts_queue_size
-    global act
-    global shouldRun
-
-    while shouldRun:
-        each_queue_lengths = {k: len( v ) for k ,v in all_hosts_queue_size.items()}
-        state = list( each_queue_lengths.values() )
-        state.append( 1 )
-        rl_start_time = time.time()
-        act = agent.get_action( state )
-        print(time.time()-start_time, "-------------dnn action time")
-        #print( "--- %s seconds ---" % (time.time() - rl_start_time) )
-        #print(state, act, "---state, act")
-        time.sleep(0.00000001)
 
 
 def main():
@@ -129,25 +107,13 @@ def main():
     # ---- start testing process ----
     chars = string.ascii_letters + string.digits
     data_sample = []
-    for i in range( 500):
-        data_sample.append( [''.join( random.choice( chars ) for _ in range( 600 ) ) ,
-                             ''.join( random.choice( chars ) for _ in range( int( 1000 ) ) )] )
+    for i in range( 500 ):
+        data_sample.append( [''.join( random.choice( chars ) for _ in range( 6000 ) ) ,
+                             ''.join( random.choice( chars ) for _ in range( int( 10000 ) ) )] )
 
-    t1 = threading.Thread( target=run_client, args=(data_sample,) )
-    t2 = threading.Thread( target=run_rl_agent, args=(actor_agent,) )
-    # creating two threads here t1 & t2
-    t1.start()
-    t2.start()
-    # starting threads here parallel by using start function.
-    # t1.join()
-    # # this join() will wait until the cal_square() function is finished.
-    # t2.join()
-    # this join() will wait unit the cal_cube() function is finished.
-
-    test_result ,req_for_hosts = my_queue.get()
-    #test_mean = np.mean( test_result )
+    test_result ,req_for_hosts = run_test( data_sample ,actor_agent )
+    test_mean = np.mean( test_result )
     # all_rl_mean.append(test_mean)
-
     print( 'Here is latency:' )
     latency_array = sender.getLatencies()
     # time.sleep(10)
@@ -157,7 +123,7 @@ def main():
             latency_value = latency_array[str( n )]
             latency_each_host[i] += latency_value
     print( latency_each_host )
-    # print( test_mean ,"------rl, baseline" )
+    print( test_mean ,"------rl, baseline" )
     # sess.close()
 
     # print(all_rl_mean)

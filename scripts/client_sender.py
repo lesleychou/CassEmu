@@ -28,7 +28,7 @@ class ClientSender:
         for host in self.host_queues:
             # you might need an if to check if the req_id is in the host
             if str(req_id) in self.host_queues[host]:
-                print(req_id, "###########remove here")
+                #print(req_id, "###########remove here")
                 self.host_queues[host].remove(str(req_id))
 
     def getLatencies(self):

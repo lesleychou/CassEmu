@@ -9,7 +9,7 @@ import collections
 import string
 
 # you should put the IPs of replicas in the hosts
-hosts = ['10.52.1.99' ,'10.52.3.66' ,'10.52.3.5']
+hosts = ['10.52.1.5', '10.52.3.82', '10.52.2.128']
 sender = ClientSender( hosts )
 replica_num = 3
 
@@ -43,7 +43,7 @@ def sys_main():
         data_sample.append( [''.join( random.choice( chars ) for _ in range( 6000 ) ) ,
                              ''.join( random.choice( chars ) for _ in range( int( 10000 ) ) )] )
     req_for_hosts = {}
-    host_id = '10.52.1.99'
+    host_id = '10.52.3.82'
 
     for s in hosts:
         req_for_hosts[s] = []
@@ -63,7 +63,7 @@ def sys_main():
         # print(paras)
         # send request
         # decision_interval = 0.00001
-        queue_value = sender.host_queues['10.52.1.99']
+        queue_value = sender.host_queues['10.52.3.82']
         plot_queue[str(req_id)]=len(queue_value)
         #print(queue_value, "-------queue size")
         #if (time.time() - curr_time) >= decision_interval:
